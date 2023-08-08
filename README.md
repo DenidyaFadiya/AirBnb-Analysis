@@ -6,108 +6,29 @@ This analysis is used to see customers preference when booking AirBnb in NYC
 </p>
 
 
-In this Project I will be exploring the data to see the analysis on house sales across the Melbourne by seeing which House Type, which Region, which Seller has the most house sold.
+In this Project I will be exploring customer's preference when they are booking their AirBnb in New York City. I will be seeing customer's preference based on the Area and type of room they are choosing.
 
 ## Full Query for Data Exploratory Project
 **Check the Full Query for Data Exploratory Project [here](https://github.com/DenidyaFadiya/Data_Exploratory-MelbourneHouseSales/blob/main/Full%20Query%20-%20Data%20Exploratory%20Melbourne%20House%20Sales).**
 
 **Tableau Interactive Dashboard [here](https://public.tableau.com/app/profile/denidya.fadiya/viz/MelbourneHouseAnalysis/Dashboard1).**
 
-In this Data Exploratory project I will be cleaning data that I took from [Kaggle Data Source](https://www.kaggle.com/datasets/dansbecker/melbourne-housing-snapshot).
+In this Data Exploratory project I will be cleaning data that I took from [Kaggle Data Source]([https://www.kaggle.com/datasets/dansbecker/melbourne-housing-snapshot](https://www.kaggle.com/datasets/arianazmoudeh/airbnbopendata)).
 
 ## Exploratory Data Project
 
-This Exploratory data I am going to be using the data I have cleaned in the previous Data Cleaning Project
-I have 3 tables which are ; SalesData, Seller and Type
 
-**SalesData**
-
-
-
-![image](https://user-images.githubusercontent.com/129844542/235099687-0bfa9903-036c-4dc5-a592-614c64d34c27.png)
-
- 
-
-**Seller**
-
-
-
-
-![image](https://user-images.githubusercontent.com/129844542/235099703-f4fc20fe-1279-4258-8cf0-09bb55e39177.png)
-
-
-**Type**
-
-
-
-![image](https://user-images.githubusercontent.com/129844542/235099720-c13ccac9-a246-4ce3-8322-29048ac04dbb.png)
-
-
-*Optional : Changing the TypeId in SalesData using the data that represents the alphabet
-But I am not gonna do it since I will be using join later. But here is the query if you want to change it prior to the project
-```
-select House_Id, typeId,
-case
-	when typeId = 'h' then 'House'
-	when typeId = 't' then 'Townhouse'
-	else 'Apartment'
-end as TypeFixed
-from dbo.SalesData
-order by House_Id
-```
- ![image](https://user-images.githubusercontent.com/129844542/235099854-dcc5ff78-f843-4070-a52c-a898723d1407.png)
-
-
-Update query 
-```
-update dbo.SalesData
-set typeId = case typeId
-	when 'h' then 'House'
-	when 't' then 'Townhouse'
-	else 'Apartment'
-end
-from dbo.SalesData
-```
- ![image](https://user-images.githubusercontent.com/129844542/235099873-5962bef6-de45-4d80-adfa-9a4915cba0c6.png)
-
-![image](https://user-images.githubusercontent.com/129844542/235099887-20db95c2-64e5-4281-9b45-7d503dec1234.png)
-
-
-### Joining all the tables
-This is the cleaned and complied data that I am going to be using, it consists of all the data that I will be analyzing in this Exploratory Project. I filtered the building area and landsize to get rid of the nulls and zeros otherwise the data won’t be too accurate. 
+### How many AirBnb are there in New York City?
+Manhattam has  27.649, Brooklyn	has 25.997, Queens 8.555, Bronx	1,765. Staten Island 596
  ```
- select sal.House_Id, 
-		Suburb, 
-		ty.Type,
-		Price, 
-		Distance, 
-		Date, 
-		Landsize, 
-		BuildingArea,
-		RegionName,
-		Seller
-from dbo.SalesData sal
-join dbo.Seller sel
-	on	sal.House_Id = sel.House_id
-join dbo.type ty
-	on ty.typeId = sal.TypeId
-where BuildingArea is not null
-and not Landsize = '0'
-order by House_Id
+select 
+	neighbourhood_group,
+	COUNT(neighbourhood_group) as CountofNG
+from opendata
+group by neighbourhood_group
+order by CountofNG desc
 ```
- ![image](https://user-images.githubusercontent.com/129844542/235099919-ff347995-dcf0-4066-86c2-5e3496669605.png)
-
-![image](https://user-images.githubusercontent.com/129844542/235099929-2c7e9499-8a43-4f28-ae11-8091d4678398.png)
-
-### Count how many houses are in Melbourne
-Total houses sold in Melbourne that has full data is 6.077 
- ```
- select count(typeid) as TotalHousesInMelbourne
-from dbo.SalesData sal
-where BuildingArea is not null
-and not Landsize = '0'
-```
- ![image](https://user-images.githubusercontent.com/129844542/235099958-0f4415e9-cf67-43f8-ac03-c004d7f56b03.png)
+ ![image](![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/2db55dc2-5d30-4e01-ae16-471ce54ad630))
 
 ![image](https://user-images.githubusercontent.com/129844542/235099965-7f26a576-4154-4c93-8d3d-05a579b86978.png)
 
