@@ -50,7 +50,7 @@ and not Landsize = '0'
 group by type
 order by TotalHousesInMelbourne desc
 ```
-![image](https://user-images.githubusercontent.com/129844542/235100016-c3b167e9-990b-485e-9f5b-2d16e3634a96.png)
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/d4170008-73ef-4920-bbb3-7035e99176a3)
 
 ![image](https://user-images.githubusercontent.com/129844542/235100032-ba87db82-4f68-413e-9386-b5694a61b38c.png)
 
