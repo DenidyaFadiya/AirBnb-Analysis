@@ -9,7 +9,7 @@ This analysis is used to see customers preference when booking AirBnb in NYC
 In this Project I will be exploring customer's preference when they are booking their AirBnb in New York City. I will be seeing customer's preference based on the Area and type of room they are choosing.
 
 ## Full Query for Data Exploratory Project
-**Check the Full Query for Data Exploratory Project [here](https://github.com/DenidyaFadiya/Data_Exploratory-MelbourneHouseSales/blob/main/Full%20Query%20-%20Data%20Exploratory%20Melbourne%20House%20Sales).**
+**Check the Full Query for Data Exploratory Project [here](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/blob/main/Full%20Query%20-%20AirBnb%20New%20York).**
 
 **Tableau Interactive Dashboard [here](https://public.tableau.com/app/profile/denidya.fadiya/viz/MelbourneHouseAnalysis/Dashboard1).**
 
