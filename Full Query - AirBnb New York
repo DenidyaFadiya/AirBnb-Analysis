@@ -1,0 +1,247 @@
+
+use new_airbnb
+
+--updating the alphabet with the right data
+--i am not doing it since i want to use join
+
+
+update Opendata
+set instant_bookable = case instant_bookable
+	when 'False' then 'No'
+	else 'Yes'
+end
+from Opendata
+
+
+----change the neighbourhood to the correct value
+
+update opendata
+set neighbourhood_group = 'Manhattan'
+where neighbourhood_group = 'manhatan'
+
+
+update opendata
+set neighbourhood_group = 'Brooklyn'
+where neighbourhood_group = 'brookln'
+
+
+--- classification in stay length
+
+select minimum_nights,
+case 
+	when minimum_nights <=30 then '<1 month'
+	when minimum_nights <=90 then '>1 month'
+	when minimum_nights <=183 then '>3 months'
+	when minimum_nights <=365 then '>6 months'
+	else '>1 year'
+end as stay
+from opendata
+where minimum_nights is not null
+and minimum_nights > 0
+order by minimum_nights desc
+
+
+alter table opendata
+add Stay_Category nvarchar (255)
+
+update opendata
+set Stay_Category = case 
+	when minimum_nights <=30 then '<1 month'
+	when minimum_nights <=90 then '>1 month'
+	when minimum_nights <=183 then '>3 months'
+	when minimum_nights <=365 then '>6 months'
+	else '>1 year'
+end
+
+alter table opendata
+drop column stay_category
+
+------ make total price out of price and service fee
+
+update opendata
+set service_fee = 0
+where service_fee is null
+
+
+select price,
+		service_fee,
+		(price+service_fee) as total_price
+from opendata
+
+alter table opendata
+add total_price nvarchar (255)
+
+update opendata
+set total_price = price+service_fee
+
+select price,
+		service_fee,
+		total_price
+from opendata
+
+
+---changing the country and country code
+
+update opendata
+set Country_code = 'US'
+where Country_code is null
+
+update opendata
+set Country = 'United States'
+where Country is null
+
+
+
+--- which one is higher unconfirmed or verified host?
+
+select 
+	host_identity_verified,
+	COUNT(host_identity_verified) as HostVerfied
+from opendata
+group by host_identity_verified
+
+--- which neighborhood_group has the most airbnb
+select 
+	neighbourhood_group,
+	COUNT(neighbourhood_group) as CountofNG
+from opendata
+group by neighbourhood_group
+order by CountofNG desc
+
+
+--Average Price and Average Fee per Area / Neighbourhood
+select 
+	neighbourhood_group,
+	count(neighbourhood_group) as CountOfArea,
+	round(avg(price),1) as AvgPrice,
+	round(avg(service_fee),1) as AvgFee
+from opendata
+group by neighbourhood_group
+order by AvgPrice desc
+
+--Average Price and Average Fee per Room Type
+select 
+	room_type,
+	count(room_type) as CountOfType,
+	round(avg(price),1) as AvgPrice,
+	round(avg(service_fee),1) as AvgFee
+from opendata
+group by room_type
+order by AvgPrice desc
+
+
+--- how about the spreading of room type 
+--in each neighbourhood?
+select
+	room_type,
+	neighbourhood_group,
+	COUNT(neighbourhood_group) as CountPerType
+from opendata
+group by room_type, neighbourhood_group
+order by room_type, CountPerType desc
+
+
+
+
+
+---which of the policy does the customers prefer?
+select cancellation_policy,
+		count(cancellation_policy) as CancelPref,
+		round(count(*) * 100.0 / sum(count(*)) over(),1) as PctCancel
+from OpenData
+group by cancellation_policy 
+order by CancelPref desc
+
+--the elaboration for cancellation policy
+select cancellation_policy,
+		neighbourhood_group,
+		count(cancellation_policy) as CancelPref
+from OpenData
+group by cancellation_policy, neighbourhood_group
+order by cancellation_policy, CancelPref desc
+
+
+
+---which of the bookable regulation
+--does the customers prefer?
+select instant_bookable,
+		count(instant_bookable) as BookPref,
+		round(count(*) * 100.0 / sum(count(*)) over(),1) as PctBook
+from OpenData
+group by instant_bookable 
+order by  BookPref desc
+
+--the elaboration for bookable regulation
+select instant_bookable,
+		neighbourhood_group,
+		count(instant_bookable) as CancelPref
+from OpenData
+group by instant_bookable, neighbourhood_group
+order by instant_bookable, CancelPref desc
+
+
+
+----how long does the customers like to stay?
+select 
+		stay_category,
+		count(stay_category) as Nights,
+		round(count(*) * 100.0 / sum(count(*)) over(),1) as  NightsPct
+from OpenData
+where minimum_nights > 0
+group by stay_category
+order by Nights desc
+
+select 
+		neighbourhood_group,
+		stay_category,
+		count(stay_category) as MinNight
+from OpenData
+where minimum_nights > 0
+group by stay_category, neighbourhood_group
+order by neighbourhood_group, MinNight desc
+
+select 
+		neighbourhood_group,
+		stay_category,
+		count(stay_category) as MinNight
+from OpenData
+where minimum_nights > 0 and stay_category = '<1 month'
+group by stay_category, neighbourhood_group
+order by MinNight desc
+
+
+---How satisfied are the customer with AirBnb?
+select rating,
+		count(rating) as AreaRate,
+		round(count(*) * 100.0 / sum(count(*)) over(),1) as  RatePct
+from opendata
+group by rating
+order by AreaRate desc
+
+--average rate for AirBnb
+with cte_rate
+as (
+select rating,
+		count(rating) as CountofRating
+from opendata
+group by rating
+)
+select 
+    sum(Rating * CountofRating) / sum(CountofRating) as AvgRating
+from cte_rate;
+
+---which neighbourhood_group has the best Airbnb ratings?
+select neighbourhood_group,
+		rating,
+		count(rating) as AreaRate
+from opendata
+group by neighbourhood_group, rating
+order by neighbourhood_group, AreaRate desc
+
+---which room_type has the best Airbnb ratings?
+select room_type,
+		rating,
+		count(rating) as AreaRate
+from opendata
+group by room_type, rating
+order by room_type, AreaRate desc
