@@ -11,8 +11,7 @@ In this Project I will be exploring customer's preference when they are booking 
 ## Full Query for Data Exploratory Project
 **Check the Full Query for Data Exploratory Project [here](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/blob/main/Full%20Query%20-%20AirBnb%20New%20York).**
 
-**Tableau Interactive Dashboard [here]
-(https://public.tableau.com/app/profile/denidya.fadiya/viz/AirBnbAnalysis_16914000059400/Dashboard1).** 
+**Tableau Interactive Dashboard [here](https://public.tableau.com/app/profile/denidya.fadiya/viz/AirBnbAnalysis_16914000059400/Dashboard1).** 
 
 In this Data Exploratory project I will be cleaning data that I took from [Kaggle Data Source]([https://www.kaggle.com/datasets/dansbecker/melbourne-housing-snapshot](https://www.kaggle.com/datasets/arianazmoudeh/airbnbopendata)).
 
