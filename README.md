@@ -30,209 +30,191 @@ order by CountofNG desc
 ```
 ![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/2c1bb6c9-5fd8-44c8-ac01-91cb5f351c8f)
 
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/bb346a2f-d4a0-4c0e-8203-14dc97b52de5)
 
 
-
-
-### See which type is mostly sold in Melbourne
-From the result below, people in Melbourne tend to buy House compared to other houses types.
-From 6.077 houses sold 4.782 belong to House type
+### Average Price and Average Fee per Area / Neighbourhood
+Bronx price average is the highest among the area stated with average $632/night and Hotel Room price is the highest in Room Type with average $663/night.
 ```
-select ty.type,
-		count(type) as TotalHousesInMelbourne
-from dbo.SalesData sal
-join dbo.type ty
-	on ty.typeId = sal.TypeId
-where BuildingArea is not null
-and not Landsize = '0'
-group by type
-order by TotalHousesInMelbourne desc
-```
-![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/d4170008-73ef-4920-bbb3-7035e99176a3)
+--Average Price and Average Fee per Area / Neighbourhood
+select 
+	neighbourhood_group,
+	count(neighbourhood_group) as CountOfArea,
+	round(avg(price),1) as AvgPrice,
+	round(avg(service_fee),1) as AvgFee
+from opendata
+group by neighbourhood_group
+order by AvgPrice desc
 
-![image](https://user-images.githubusercontent.com/129844542/235100032-ba87db82-4f68-413e-9386-b5694a61b38c.png)
+--Average Price and Average Fee per Room Type
+select 
+	room_type,
+	count(room_type) as CountOfType,
+	round(avg(price),1) as AvgPrice,
+	round(avg(service_fee),1) as AvgFee
+from opendata
+group by room_type
+order by AvgPrice desc
+```
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/fc2a2a89-eb0b-4177-9188-ffb43f5afea0)
+
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/f4c3f161-34b0-48f6-a54d-6cf4f1de873e)
+
+
+### how about the spreading of room type in each neighbourhood?
+The result shows that each of the Room type ; Home/Apartment, Hotel Room,
+Shared room are mostly rented in Manhattan, but customer prefer Private room 
+when they are in Brooklyn Area
+```
+--- how about the spreading of room type 
+--in each neighbourhood?
+select
+	room_type,
+	neighbourhood_group,
+	COUNT(neighbourhood_group) as CountPerType
+from opendata
+group by room_type, neighbourhood_group
+order by room_type, CountPerType desc
+```
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/a786bebc-668f-4a2b-8b08-4e7acf8aba91)
+
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/0c811984-056d-4d5e-ba40-6b48e8da645b)
+
+
+### which of the policy does the customers prefer?
+The customers are avoiding the strict cancellation policy, which it does make
+a lot of sense, since it is part of the service if the customers wants 
+to cancel their AirBnb booking easily. 
+```
+---which of the policy does the customers prefer?
+select cancellation_policy,
+		count(cancellation_policy) as CancelPref,
+		round(count(*) * 100.0 / sum(count(*)) over(),1) as PctCancel
+from OpenData
+group by cancellation_policy 
+order by CancelPref desc
+
+--the elaboration for cancellation policy
+select cancellation_policy,
+		neighbourhood_group,
+		count(cancellation_policy) as CancelPref
+from OpenData
+group by cancellation_policy, neighbourhood_group
+order by cancellation_policy, CancelPref desc
+
+```
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/c5ed7036-8667-4738-ae7f-e4222680787a)
+
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/c2fc983e-462f-4c2c-9fc5-08ababd960b9)
 
  
- 
 
-
-### See which Region has the most house sold
-Southern Metropolitan has the most houses sold compared to other Region amongs the Melbourne with 1.887 houses
+### which of the bookable regulation does the customers prefer?
+The customers have no problem with the booking regulation, they are fine with
+the non-instant booking policy. 
 ```
-select Regionname,
-		count(RegionName) as TotalHouseSoldPerRegion
-from dbo.SalesData sal
-where BuildingArea is not null
-and not Landsize = '0'
-group by regionname
-order by TotalHouseSoldPerRegion desc
+---which of the bookable regulation
+--does the customers prefer?
+select instant_bookable,
+		count(instant_bookable) as BookPref,
+		round(count(*) * 100.0 / sum(count(*)) over(),1) as PctBook
+from OpenData
+group by instant_bookable 
+order by  BookPref desc
+
+--the elaboration for bookable regulation
+select instant_bookable,
+		neighbourhood_group,
+		count(instant_bookable) as CancelPref
+from OpenData
+group by instant_bookable, neighbourhood_group
+order by instant_bookable, CancelPref desc
 ```
-![image](https://user-images.githubusercontent.com/129844542/235100090-fc76fd2f-51da-4db4-b5f2-d66fe98f50fd.png)
-![image](https://user-images.githubusercontent.com/129844542/235100106-549ea6bf-afc1-4bfa-80a4-4af256abc9fe.png)
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/c0cc208b-b9fd-43c5-9efd-1ed5d509dbbd)
 
-### See the spreading of houses on each Region.
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/e1f5d862-9c5b-414b-be73-f9f8e1357517)
 
-From the result below, we can see the amount of houses sold per Region separated by the house type
+
+### how long does the customers like to stay?
+98.5% or customers are renting for less than a month.
 ```
-select type,
-		Regionname,
-		count(type) as TotalHouseByType
-from dbo.SalesData sal
-join dbo.type ty
-	on ty.typeId = sal.TypeId
-where BuildingArea is not null
-and not Landsize = '0'
-group by type, regionname
-order by type, TotalHouseByType desc
+----how long does the customers like to stay?
+select 
+		stay_category,
+		count(stay_category) as Nights,
+		round(count(*) * 100.0 / sum(count(*)) over(),1) as  NightsPct
+from OpenData
+where minimum_nights > 0
+group by stay_category
+order by Nights desc
+
 ```
-![image](https://user-images.githubusercontent.com/129844542/235100183-2296ef67-d1fb-4b51-bfb4-023782f6ee27.png)
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/4121beb2-9eed-4e84-9693-ae1cb4196fcf)
 
- ![image](https://user-images.githubusercontent.com/129844542/235100212-671f31fb-8db7-4d10-b070-a49f53816c4c.png)
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/51526a03-76ba-4c10-b65c-7da4cec6588d)
 
- 
 
-### Average House Price across the Melbourne
-This Query shows that even though Southern Area has the most houses sold, the average price is still the highest amongst the other Region
+### How satisfied are the customer with AirBnb? 
+Ratings are not that quite good, the spreading of rating are almost equal for all stars.
+and the average rating is only 3 star. 
 ```
-select RegionName,
-		avg(price) as AverageHousePricePerRegionName
-from dbo.SalesData
-where BuildingArea is not null
-and not Landsize = '0'
-group by regionname
-order by AverageHousePricePerRegionName desc
+select rating,
+		count(rating) as AreaRate,
+		round(count(*) * 100.0 / sum(count(*)) over(),1) as  RatePct
+from opendata
+group by rating
+order by AreaRate desc
 ```
-![image](https://user-images.githubusercontent.com/129844542/235100273-ae7e2959-899a-4d51-8d2c-4a453ba11a1a.png)
-
-![image](https://user-images.githubusercontent.com/129844542/235100296-e3672c04-ed79-4494-8c0f-6aa9c15b9d0b.png)
-
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/af444aeb-64af-4e93-94d1-ecba9b179ff3)
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/c7691678-05b1-4f59-bdcd-fef7d7dd19b9)
 
 
-### Houses sold in Southern Metropolitan
-From the analysis above, we can all asume that Southern Metropolitan is leading in most houses sold, but which Suburb has the most houses sold?
-It is Bentleigh East leading with the most houses sold in Southern Metropolitan with 118 houses.
+Weighted Average Rating
 ```
-select top 10 Suburb, 
-	count(type) as SoldPerSuburb
-from dbo.SalesData sal
-join dbo.type ty
-	on ty.typeId = sal.TypeId
-where regionname like '%southern%'
-and BuildingArea is not null
-and not Landsize = '0'
-group by Suburb
-order by SoldPerSuburb desc
+--average rate for AirBnb
+with cte_rate
+as (
+select rating,
+		count(rating) as CountofRating
+from opendata
+group by rating
+)
+select 
+    sum(Rating * CountofRating) / sum(CountofRating) as AvgRating
+from cte_rate;
 ```
-![image](https://user-images.githubusercontent.com/129844542/235100329-c89d9243-0b00-4c31-965e-b67baa0d31ea.png)
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/d4966d57-bc45-40dd-bd36-9ad2f2acea57)
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/761f2fbf-f3b9-400b-87b7-147d596d0c89)
 
-![image](https://user-images.githubusercontent.com/129844542/235100345-1f2af085-8d9e-4294-b30c-09575d9735fd.png)
 
-### Which Suburb in Southern Metropolitan Region has the most houses sold
-Let’s go a little deeper, Bentleigh East is the leading Suburb in Southern Metropolitan Region, but how is the spreading of houses type sold in Bentleigh East out of those 118?
-The result says House is leading with 84, Townhouse on the 2nd with 22 and apartment is the least desired with only 12.
+### which neighbourhood_group has the best Airbnb ratings?
+Most Bronx customers are not happy with their AirBnb which their highest rate is only star 3.
 ```
-select suburb,
-		type,
-		count(type) as SoldInBentEast
-from dbo.SalesData sal
-join dbo.type ty
-	on ty.typeId = sal.TypeId
-where Suburb = 'Bentleigh  East'
-and BuildingArea is not null
-and not Landsize = '0'
-group by suburb, type 
-order by SoldInBentEast desc
+---which neighbourhood_group has the best Airbnb ratings?
+select neighbourhood_group,
+		rating,
+		count(rating) as AreaRate
+from opendata
+group by neighbourhood_group, rating
+order by neighbourhood_group, AreaRate desc
 ```
-![image](https://user-images.githubusercontent.com/129844542/235100365-e673a3f1-3f1f-45fa-8e3e-1407b6168276.png)
-![image](https://user-images.githubusercontent.com/129844542/235100379-22c37ee5-7177-4a9b-9b42-f7ee3060ef31.png)
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/3916cf49-3ec8-4dd9-8aba-7e1fe567758b)
+
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/9c1f5b8c-bb2c-46df-90f0-ae5bddd25904)
 
 
-### Top 10 Seller in Quantity
-This query will show whose seller sold the most houses in quantity.
-Nelson is leading with 726 houses sold and giving almost 12% to the sales.
+### which room_type has the best Airbnb ratings?
+Customers are satisfied with the room type. Almost all room type are rated with 5 star but shared room are the only one who gets rated 4 star out of them.
 ```
-select top 10 Seller,
-		count(type) as SellerHouseSold,
-		count(*) * 100.0 / sum(count(*)) over() as HouseSoldPercentage
-from dbo.SalesData sal
-join dbo.Seller sel
-	on	sal.House_Id = sel.House_id
-join dbo.type ty
-	on ty.typeId = sal.TypeId
-where BuildingArea is not null
-and not Landsize = '0'
-group by seller
-order by SellerHouseSold desc
+---which room_type has the best Airbnb ratings?
+select room_type,
+		rating,
+		count(rating) as AreaRate
+from opendata
+group by room_type, rating
+order by room_type, AreaRate desc
 ```
- ![image](https://user-images.githubusercontent.com/129844542/235100407-ee5c7882-6322-43f7-85b5-0528e8e3f6d7.png)
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/b1f80023-9afc-4158-9243-758a28e556b5)
 
-![image](https://user-images.githubusercontent.com/129844542/235100430-ddfe504e-8423-47e9-a2b1-7a270ebc7a5d.png)
-
-### Top 10 Seller in Revenue
-This query will show whose seller sold the most houses in Revenue.
-Jellis brought the most revenue to the company with $902.793.922 and giving almost 13% to the company revenue.
-```
-select top 10 Seller,
-		sum(price) as TotalPricePerSeller,
-		sum(price) * 100.0 / sum(sum(price)) over() as RevenuePerSeller
-from dbo.SalesData sal
-join dbo.Seller sel
-	on	sal.House_Id = sel.House_id
-join dbo.type ty
-	on ty.typeId = sal.TypeId
-where BuildingArea is not null
-and not Landsize = '0'
-group by seller
-order by TotalPricePerSeller desc
-```
- ![image](https://user-images.githubusercontent.com/129844542/235100443-75cbde51-df3e-492f-9f7d-badc6ef57e37.png)
-
-![image](https://user-images.githubusercontent.com/129844542/235100455-fc00d74b-c327-4e67-acee-d756152982c9.png)
-
-### Average Distance from the Property to the downtown
-If seen by the distance, Northern Metropolitan has the closest property to the downtown area
-```
-select RegionName, 
-		avg(distance) as AverageDistance
-from dbo.SalesData sal
-where BuildingArea is not null
-and not Landsize = '0'
-group by regionname
-order by AverageDistance
-```
-![image](https://user-images.githubusercontent.com/129844542/235100474-50944b34-a9f8-4718-9171-abcd01252110.png)
-![image](https://user-images.githubusercontent.com/129844542/235100488-a537e831-67dd-4f09-91d1-5800daf9555e.png)
-
-
-### Average Landsize per Region Name
-Northern Victoria is also leading with the biggest landsize compared to the other Region.
-```
-select RegionName, 
-		avg(Landsize) as AverageLandsize
-from dbo.SalesData sal
-where BuildingArea is not null
-and not Landsize = '0'
-group by regionname
-order by AverageLandsize desc
-```
-![image](https://user-images.githubusercontent.com/129844542/235100537-129c540a-9f29-4ae1-b8fe-16be0ce96c41.png)
-
- ![image](https://user-images.githubusercontent.com/129844542/235100553-6cd0bfa2-a6ab-4032-b101-5d78208e2619.png)
-
-
-### Average Builiding Area per Region Name
-Northern Victoria is also leading with the biggest Builiding Area compared to the other Region.
-```
-select RegionName, 
-		avg(BuildingArea) as AverageBuildingArea
-from dbo.SalesData sal
-where BuildingArea is not null
-and not Landsize = '0'
-group by regionname
-order by AverageBuildingArea desc
-```
- ![image](https://user-images.githubusercontent.com/129844542/235100564-752e332d-3189-4f7e-acdc-b65865583b5d.png)
-
-![image](https://user-images.githubusercontent.com/129844542/235100578-cde5d72a-0c47-4115-adba-e73c7042052a.png)
-
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/8e2ae9f7-05ed-4344-8e74-6d4b7f9bb0f9)
 
