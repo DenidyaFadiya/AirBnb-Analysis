@@ -28,7 +28,7 @@ from opendata
 group by neighbourhood_group
 order by CountofNG desc
 ```
- ![image](![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/2db55dc2-5d30-4e01-ae16-471ce54ad630))
+![image](https://github.com/DenidyaFadiya/Data_Exploratory-AirBnbAnalysis/assets/129844542/2db55dc2-5d30-4e01-ae16-471ce54ad630)
 
 ![image](https://user-images.githubusercontent.com/129844542/235099965-7f26a576-4154-4c93-8d3d-05a579b86978.png)
 
